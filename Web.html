@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fake Hacker Chat</title>
+<style>
+    #chatbox {
+        width: 400px;
+        height: 300px;
+        border: 1px solid #ccc;
+        overflow-y: scroll;
+        padding: 10px;
+    }
+</style>
+</head>
+<body>
+<div id="chatbox"></div>
+<input type="text" id="nameInput" placeholder="Your name...">
+<input type="text" id="messageInput" placeholder="Type your message...">
+<button onclick="sendMessage()">Send</button>
+<button onclick="promptPassword()">Reset</button>
+
+<script>
+    function sendMessage() {
+        var nameInput = document.getElementById("nameInput");
+        var messageInput = document.getElementById("messageInput");
+        var name = nameInput.value;
+        var message = messageInput.value;
+        if (name.trim() !== "" && message.trim() !== "") {
+            var timestamp = new Date().toLocaleString();
+            var fullMessage = "[" + timestamp + "] " + name + ": " + message;
+            appendMessageToChat(fullMessage);
+            saveMessage(fullMessage);
+            nameInput.value = "";
+            messageInput.value = "";
+        }
+    }
+
+    function appendMessageToChat(message) {
+        var chatbox = document.getElementById("chatbox");
+        var messageElement = document.createElement("div");
+        messageElement.textContent = message;
+        chatbox.appendChild(messageElement);
+    }
+
+    function saveMessage(message) {
+        var messages = JSON.parse(localStorage.getItem("chatMessages")) || [];
+        messages.push(message);
+        localStorage.setItem("chatMessages", JSON.stringify(messages));
+    }
+
+    function loadMessages() {
+        var messages = JSON.parse(localStorage.getItem("chatMessages")) || [];
+        messages.forEach(function(message) {
+            appendMessageToChat(message);
+        });
+    }
+
+    function resetChat(password) {
+        if (password === "T9!k#vD*p@W7") {
+            localStorage.removeItem("chatMessages");
+            document.getElementById("chatbox").innerHTML = "";
+        } else {
+            alert("Incorrect password!");
+        }
+    }
+
+    function promptPassword() {
+        var password = prompt("Please enter the password to reset the chat:");
+        resetChat(password);
+    }
+
+    // Load messages when the page loads
+    window.onload = loadMessages;
+</script>
+</body>
+</html>
